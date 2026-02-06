@@ -1,0 +1,20 @@
+[package]
+name = "spider-macro"
+version = "0.1.2"
+edition = "2024"
+authors = ["mzyui <mzyui@proton.me>"]
+description = "Proc-macros for the spider-lib web scraping framework."
+homepage = "https://github.com/spider-lib/spider-lib"
+repository = "https://github.com/spider-lib/spider-lib"
+license = "MIT"
+readme = "README.md"
+keywords = ["web-scraping", "macros", "proc-macros", "rust"]
+categories = ["web-programming", "development-tools", "parsing"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2.0", features = ["full"] }
+quote = "1.0"
+serde = { version = "1.0", features = ["derive"] }
