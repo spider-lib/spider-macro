@@ -1,57 +1,56 @@
 # spider-macro
 
-Procedural macros for the `spider-lib` web scraping framework.
+Provides procedural macros for the `spider-lib` framework to reduce boilerplate code.
 
-[![crates.io](https://img.shields.io/crates/v/spider-macro.svg)](https://crates.io/crates/spider-macro)
-[![docs.rs](https://docs.rs/spider-macro/badge.svg)](https://docs.rs/spider-macro)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Overview
 
-`spider-macro` provides procedural macros that simplify the implementation of key traits in the `spider-lib` framework. This crate contains attribute macros that reduce boilerplate code when defining scraped data structures.
+The `spider-macro` crate contains procedural macros that automate the implementation of common traits and patterns used in the spider framework. These macros significantly reduce the amount of boilerplate code required when defining custom data structures for scraped items.
 
-## Getting Started
+## Key Macros
 
-To use `spider-macro`, add it to your project's `Cargo.toml`:
+- **`#[scraped_item]`**: Derives the `ScrapedItem` trait along with necessary implementations for serialization, deserialization, cloning, and type conversions. This macro automatically implements all required traits for a struct to be used as a scraped item in the framework.
 
-```toml
-[dependencies]
-spider-lib = "0.2" # Main framework
-spider-macro = "0.1" # Proc-macros for spider-lib
-```
+## Features
 
-## Available Macros
+- **Automatic Trait Derivation**: Implements `Serialize`, `Deserialize`, `Clone`, and `Debug` traits automatically
+- **ScrapedItem Implementation**: Provides the complete implementation of the `ScrapedItem` trait required by the framework
+- **Type Safety**: Maintains type safety while reducing boilerplate
+- **Performance**: Generates efficient code without runtime overhead
 
-### `#[scraped_item]`
-
-The `#[scraped_item]` attribute macro automatically implements the necessary traits for a struct to be used as a `ScrapedItem` within the `spider-lib` framework. This macro eliminates the need for manual implementations of serialization, deserialization, cloning, and type conversion traits.
+## Usage
 
 ```rust
 use spider_macro::scraped_item;
 
 #[scraped_item]
-pub struct QuoteItem {
-    pub text: String,
-    pub author: String,
+struct Article {
+    title: String,
+    content: String,
+    author: String,
+    published_date: String,
 }
+
+// The macro generates all necessary implementations automatically
+// including serialization, deserialization, and the ScrapedItem trait
 ```
-
-When applied to a struct, this macro automatically adds:
-
-- `#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]`
-- An implementation of the `ScrapedItem` trait with methods for type erasure, cloning, and JSON conversion
 
 ## How It Works
 
-The `#[scraped_item]` macro generates the following implementations:
+The `#[scraped_item]` macro generates:
 
-- `serde::Serialize` and `serde::Deserialize` for serialization/deserialization
-- `Clone` and `Debug` for common operations
-- Implementation of the `ScrapedItem` trait with:
-  - `as_any()` for type erasure
-  - `box_clone()` for boxed cloning
-  - `to_json_value()` for JSON conversion
+- `#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]` annotations
+- Complete implementation of the `ScrapedItem` trait with:
+  - `as_any()` method for type erasure
+  - `box_clone()` method for creating boxed clones
+  - `to_json_value()` method for converting to JSON values
 
-This allows your structs to seamlessly integrate with spider-lib's item processing pipeline without requiring manual boilerplate code.
+## Dependencies
+
+This crate depends on:
+- `syn`: For parsing Rust code
+- `quote`: For generating Rust code
+- `serde`: For serialization attributes
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
