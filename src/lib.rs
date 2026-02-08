@@ -25,10 +25,21 @@
 //! - **Type Safety**: Maintains type safety while reducing boilerplate
 //! - **Performance**: Generates efficient code without runtime overhead
 //!
+//! ## Dependencies
+//!
+//! When using this macro, your project must include the following dependencies:
+//! 
+//! ```toml
+//! [dependencies]
+//! spider-lib = "1.1.1"
+//! serde = { version = "1.0", features = ["derive"] }
+//! serde_json = "1.0"
+//! ```
+//!
 //! ## Example
 //!
 //! ```rust,ignore
-//! use spider_macro::scraped_item;
+//! use spider_lib::prelude::*;
 //!
 //! #[scraped_item]
 //! struct Article {
@@ -40,6 +51,8 @@
 //!
 //! // The macro generates all necessary implementations automatically
 //! // including serialization, deserialization, and the ScrapedItem trait
+//! //
+//! // Note: Make sure your Cargo.toml includes serde and serde_json as dependencies
 //! ```
 
 extern crate proc_macro;
@@ -49,26 +62,46 @@ use quote::quote;
 use syn::{parse_macro_input, ItemStruct};
 
 /// A procedural macro to derive the `ScrapedItem` trait.
+/// 
+/// This macro:
+/// 1. Implements the ScrapedItem trait
+/// 2. Adds serde Serialize and Deserialize derives
+/// 3. Makes use of items that should be in scope via prelude import
+/// 
+/// # Dependencies
+/// 
+/// Your project must include `serde` and `serde_json` as direct dependencies:
+/// 
+/// ```toml
+/// [dependencies]
+/// serde = { version = "1.0", features = ["derive"] }
+/// serde_json = "1.0"
+/// ```
 #[proc_macro_attribute]
 pub fn scraped_item(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(item as ItemStruct);
     let name = &ast.ident;
 
     let expanded = quote! {
-        #[derive(::spider_util::serde::Serialize, ::spider_util::serde::Deserialize, Clone, Debug)]
+        #[derive(
+            ::serde::Serialize,
+            ::serde::Deserialize,
+            Clone,
+            Debug
+        )]
         #ast
 
-        impl ::spider_util::item::ScrapedItem for #name {
+        impl ScrapedItem for #name {
             fn as_any(&self) -> &dyn ::std::any::Any {
                 self
             }
 
-            fn box_clone(&self) -> Box<dyn ::spider_util::item::ScrapedItem + Send + Sync> {
+            fn box_clone(&self) -> Box<dyn ScrapedItem + Send + Sync> {
                 Box::new(self.clone())
             }
 
-            fn to_json_value(&self) -> ::spider_util::serde_json::Value {
-                ::spider_util::serde_json::to_value(self).unwrap()
+            fn to_json_value(&self) -> ::serde_json::Value {
+                ::serde_json::to_value(self).unwrap()
             }
         }
     };
