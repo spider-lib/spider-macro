@@ -44,13 +44,6 @@ The `#[scraped_item]` macro generates:
   - `box_clone()` method for creating boxed clones
   - `to_json_value()` method for converting to JSON values
 
-## Dependencies
-
-This crate depends on:
-- `syn`: For parsing Rust code
-- `quote`: For generating Rust code
-- `serde`: For serialization attributes
-
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
