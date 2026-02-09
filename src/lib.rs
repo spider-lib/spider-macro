@@ -28,7 +28,7 @@
 //! ## Dependencies
 //!
 //! When using this macro, your project must include the following dependencies:
-//! 
+//!
 //! ```toml
 //! [dependencies]
 //! spider-lib = "1.1.1"
@@ -59,19 +59,19 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemStruct};
+use syn::{ItemStruct, parse_macro_input};
 
 /// A procedural macro to derive the `ScrapedItem` trait.
-/// 
+///
 /// This macro:
 /// 1. Implements the ScrapedItem trait
 /// 2. Adds serde Serialize and Deserialize derives
 /// 3. Makes use of items that should be in scope via prelude import
-/// 
+///
 /// # Dependencies
-/// 
+///
 /// Your project must include `serde` and `serde_json` as direct dependencies:
-/// 
+///
 /// ```toml
 /// [dependencies]
 /// serde = { version = "1.0", features = ["derive"] }
@@ -108,4 +108,3 @@ pub fn scraped_item(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     TokenStream::from(expanded)
 }
-
